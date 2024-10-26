@@ -1,30 +1,29 @@
 import heapq
-from Movimientos import desplazamiento, movimientoValido
+from VisualizacionArbol import visualizacionArbol
+from Movimientos import movimientoValido, desplazamiento
 
 def costoUniforme(laberinto, raton, queso):
-    # Cola de prioridad para almacenar (costo acumulado, posición actual)
+    visualizacion = visualizacionArbol()
     cola_prioridad = [(0, raton)]
-    # Diccionario para almacenar los costos mínimos para llegar a cada nodo
     costo_minimo = {raton: 0}
     
     while cola_prioridad:
-        # Extraemos el nodo con el costo acumulado más bajo
         costo_actual, raton = heapq.heappop(cola_prioridad)
+        visualizacion.agregar_nodo(raton)  # Agregar el nodo actual al árbol visual
         
         if raton == queso:
             print(f"Encontrado el queso en {raton} con costo {costo_actual}")
+            visualizacion.finalizar()
             return
         
         columna, fila = raton
-        # Probamos los 4 movimientos posibles
         for movimiento, (dc, df) in desplazamiento.items():
             nueva_pos = (columna + dc, fila + df)
-            nuevo_costo = costo_actual + 1  # Supongamos que cada movimiento tiene costo 1
+            nuevo_costo = costo_actual + 1
             
-            # Solo agregamos la nueva posición si es válida y tiene un menor costo acumulado
             if movimientoValido(laberinto, nueva_pos) and (nueva_pos not in costo_minimo or nuevo_costo < costo_minimo[nueva_pos]):
                 costo_minimo[nueva_pos] = nuevo_costo
                 heapq.heappush(cola_prioridad, (nuevo_costo, nueva_pos))
-        
-        print(f"Costos acumulados: {costo_minimo}")
-
+                visualizacion.agregar_nodo(nueva_pos, padre=raton)  # Agregar el nodo y conectar al padre
+    
+    visualizacion.finalizar()
