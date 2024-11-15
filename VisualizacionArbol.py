@@ -10,7 +10,7 @@ class VisualizacionArbol:
         self.nodos_unicos = {}  # Mapea nodos visibles a internos únicos
         self.fig, self.ax = plt.subplots(figsize=(12, 8))
         self.separacion_nivel = 2  # Separación vertical entre niveles
-        self.espacio_hojas = 1.5  # Espacio horizontal entre nodos
+        self.espacio_hojas = 2  # Espacio horizontal entre nodos
         self.pos_x = 0  # Controla la posición horizontal de las hojas en el árbol
 
     def agregar_nodo(self, nodo, padre=None):
@@ -61,12 +61,26 @@ class VisualizacionArbol:
             self.posiciones[nodo] = ((x_min + x_max) / 2, -self.nivel[nodo] * self.separacion_nivel)
 
     def _dibujar_grafico(self):
-        self.ax.clear()
+        self.ax.clear()  # Limpia el área de dibujo
         labels = nx.get_node_attributes(self.grafo, 'label')  # Recuperar etiquetas originales
-        nx.draw(self.grafo, pos=self.posiciones, labels=labels, node_color='lightblue', ax=self.ax,
-                font_weight='bold', arrows=True)
+        nx.draw(
+            self.grafo,
+            pos=self.posiciones,
+            labels=labels,
+            with_labels=True,
+            node_size=2000,
+            node_color="lightblue",
+            edgecolors="black",
+            font_size=10,
+            font_weight="bold",
+            arrows=True,
+            arrowsize=15,
+            ax=self.ax
+        )
+        self.ax.set_title("Representación del Árbol", fontsize=14)  # Añade título al gráfico
         plt.draw()
         plt.pause(0.001)  # Actualiza la visualización en tiempo real
+
 
     def finalizar(self):
         plt.show()
@@ -87,5 +101,6 @@ visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo
 visualizador.agregar_nodo((3,2), (2,2))  # Hijo repetido del nodo (2, 2)
 visualizador.agregar_nodo((3,1), (2,0))  # Hijo del nodo (2, 0)
 visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo del nodo (2, 3)
+visualizador.agregar_nodo((3,1), (1,3))  # Hijo del nodo (3, 2)
 
 visualizador.finalizar()
