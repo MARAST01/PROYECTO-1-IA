@@ -14,4 +14,4 @@ laberinto = [
 
 # Llamada a la función de búsqueda
 #preferenteAmplitud(laberinto, raton, queso)
-costoUniforme(laberinto, raton, queso)
+preferenteAmplitud(laberinto, raton, queso)
