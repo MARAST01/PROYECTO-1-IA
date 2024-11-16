@@ -1,7 +1,8 @@
 from arbol import Nodo  # Importamos la clase Nodo
-from Laberinto import laberinto  # Importamos el laberinto
+from Laberinto import laberinto,queso,raton  # Importamos el laberinto
 import networkx as nx
 import matplotlib.pyplot as plt
+import random
 
 def calcular_costo_acumulado(nodo, costo_actual=0):
     """
@@ -29,7 +30,8 @@ def obtener_movimientos_validos(pos_actual):
     """
     movimientos = []
     x, y = pos_actual
-    posibilidades = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]  # Arriba, Abajo, Izquierda, Derecha
+
+    posibilidades = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]  # Arriba, Abajo, Izquierda, Derecha
 
     for nx, ny in posibilidades:
         if 0 <= nx < len(laberinto[0]) and 0 <= ny < len(laberinto):  # Dentro de los límites
@@ -40,6 +42,7 @@ def obtener_movimientos_validos(pos_actual):
 def costo_uniforme(arbol):
     """
     Expande el nodo hoja con menor costo acumulado y actualiza el árbol.
+    Si el nodo a expandir tiene las coordenadas del queso, retorna True (meta alcanzada).
     """
     # Obtener todas las hojas con sus costos acumulados
     hojas_con_costos = obtener_hojas_con_costos(arbol)
@@ -50,6 +53,10 @@ def costo_uniforme(arbol):
     # Obtener la posición del nodo a expandir
     pos_actual = eval(nodo_a_expandir.valor)  # Convertir el string "(x, y)" a una tupla
 
+    # Verificar si el nodo actual tiene las mismas coordenadas que el queso
+    if pos_actual == queso:
+        return arbol, True  # Si es el queso, retornar el árbol y meta como True
+
     # Obtener movimientos válidos desde la posición actual
     movimientos = obtener_movimientos_validos(pos_actual)
 
@@ -59,7 +66,8 @@ def costo_uniforme(arbol):
         nuevo_nodo.costo = 1  # Suponemos que cada movimiento tiene un costo de 1
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
 
-    return arbol
+    return arbol, False  # Si no es el queso, retornar el árbol y meta como False
+"""
 # Crear el grafo dirigido
 G = nx.DiGraph()
 
@@ -86,13 +94,10 @@ def asignar_posiciones(nodo, pos, x=0, y=0, layer=1):
         x1 = x+(factor[numhijos-1][i])/(y1*y1)
         asignar_posiciones(hijo, pos, x1, y - 1, layer + 1)
 
-
-arbol = Nodo("(0,2)", 1,0)  
-
-# Expande el árbol tres veces y dibuja en cada paso
-for _ in range(6):
-    arbol = costo_uniforme(arbol)  # Expande el árbol una vez
-
+coordenadas = raton
+arbol = Nodo("coordenadas", 1,0)  
+for _ in range(6): # while meta is False:
+    arbol,meta = costo_uniforme(arbol)  # Expande el árbol una vez
     # Asignar posiciones a los nodos comenzando desde la raíz
     pos = {}
     agregar_aristas(arbol)
@@ -100,9 +105,35 @@ for _ in range(6):
 
     # Limpiar la figura anterior
     plt.clf()
-
     # Dibujar el grafo con posiciones jerárquicas
     plt.figure(figsize=(8, 6))
     nx.draw(G, pos, with_labels=True, node_size=1000, node_color="skyblue", font_size=10, font_weight="bold", arrows=True)
     plt.title(f"Árbol Jerárquico Expansión {(_ + 1)}")
     plt.show()
+
+# Expande el árbol tres veces y dibuja en cada paso
+for _ in range(6): # while meta is False:
+    control = random.randint(0, 5)
+    if control == 0:
+        arbol,meta = costo_uniforme(arbol)  # Expande el árbol una vez
+        # Asignar posiciones a los nodos comenzando desde la raíz
+        pos = {}
+        agregar_aristas(arbol)
+        asignar_posiciones(arbol, pos)
+        
+        # Limpiar la figura anterior
+        plt.clf()
+
+        # Dibujar el grafo con posiciones jerárquicas
+        plt.figure(figsize=(8, 6))
+        nx.draw(G, pos, with_labels=True, node_size=1000, node_color="skyblue", font_size=10, font_weight="bold", arrows=True)
+        plt.title(f"Árbol Jerárquico Expansión {(_ + 1)}")
+        plt.show()
+        
+        
+        
+    if control == 1:
+        arbol = ffff(arbol)
+    arbol = costo_uniforme(arbol)  # Expande el árbol una vez
+
+ """   
