@@ -1,5 +1,5 @@
 from Amplitud import preferenteAmplitud
-from CostoUniforme import costoUniforme
+#from CostoUniforme import costoUniforme
 
 # Definimos las posiciones del ratón y el queso
 raton = (0, 2)  # ratón (columna, fila)
@@ -14,4 +14,4 @@ laberinto = [
 
 # Llamada a la función de búsqueda
 #preferenteAmplitud(laberinto, raton, queso)
-preferenteAmplitud(laberinto, raton, queso)
+#costoUniforme(laberinto, raton, queso)
