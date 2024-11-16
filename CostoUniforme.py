@@ -135,5 +135,5 @@ for _ in range(6): # while meta is False:
     if control == 1:
         arbol = ffff(arbol)
     arbol = costo_uniforme(arbol)  # Expande el árbol una vez
-
+ 
  """   
