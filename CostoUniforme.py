@@ -1,8 +1,5 @@
 from arbol import Nodo  # Importamos la clase Nodo
-from Laberinto import laberinto,queso,raton  # Importamos el laberinto
-import networkx as nx
-import matplotlib.pyplot as plt
-import random
+from Laberinto import laberinto,queso  # Importamos el laberinto
 
 def calcular_costo_acumulado(nodo, costo_actual=0):
     """
@@ -31,7 +28,7 @@ def obtener_movimientos_validos(pos_actual):
     movimientos = []
     x, y = pos_actual
 
-    posibilidades = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]  # Arriba, Abajo, Izquierda, Derecha
+    posibilidades = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]  # Arriba, Derecha, Abajo, Izquierda
 
     for nx, ny in posibilidades:
         if 0 <= nx < len(laberinto[0]) and 0 <= ny < len(laberinto):  # Dentro de los límites
@@ -94,6 +91,7 @@ def asignar_posiciones(nodo, pos, x=0, y=0, layer=1):
         x1 = x+(factor[numhijos-1][i])/(y1*y1)
         asignar_posiciones(hijo, pos, x1, y - 1, layer + 1)
 
+
 coordenadas = raton
 arbol = Nodo("coordenadas", 1,0)  
 for _ in range(6): # while meta is False:
@@ -112,8 +110,9 @@ for _ in range(6): # while meta is False:
     plt.show()
 
 # Expande el árbol tres veces y dibuja en cada paso
+# Expande el árbol tres veces y dibuja en cada paso
 for _ in range(6): # while meta is False:
-    control = random.randint(0, 5)
+    control = random.randint(0, 0)
     if control == 0:
         arbol,meta = costo_uniforme(arbol)  # Expande el árbol una vez
         # Asignar posiciones a los nodos comenzando desde la raíz
