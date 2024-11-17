@@ -1,6 +1,6 @@
 from arbol import Nodo  # Importamos la clase Nodo
 from Laberinto import laberinto  # Importamos el laberinto
-import networkx as nx #Libreria para graficar el arbol
+import networkx as nx
 import matplotlib.pyplot as plt
 from collections import deque  # Para manejar la cola de nodos
 
