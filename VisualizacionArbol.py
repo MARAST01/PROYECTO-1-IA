@@ -81,20 +81,20 @@ class VisualizacionArbol:
 
 
 # Prueba del árbol con nodos repetidos
-visualizador = VisualizacionArbol()
-visualizador.agregar_nodo((0, 2))  # Nodo raíz
-visualizador.agregar_nodo((0,1), (0,2))  # Primer hijo
-visualizador.agregar_nodo((0,3), (0,2))  # Segundo hijo
-visualizador.agregar_nodo((1,3), (0,1))  # Hijo del nodo (0, 1)
-visualizador.agregar_nodo((1,0), (0,3))  # Hijo del nodo (0, 3)
-visualizador.agregar_nodo((2,3), (0,3))  # Hijo del nodo (0, 3)
-visualizador.agregar_nodo((2,0), (1,0))  # Hijo del nodo (1, 0)
-visualizador.agregar_nodo((2,2), (1,0))  # Hijo del nodo (1, 0)
-visualizador.agregar_nodo((3,0), (2,2))  # Hijo del nodo (2, 2)
-visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo de (0, 1)
-visualizador.agregar_nodo((3,2), (2,2))  # Hijo repetido del nodo (2, 2)
-visualizador.agregar_nodo((3,1), (2,0))  # Hijo del nodo (2, 0)
-visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo del nodo (2, 3)
-visualizador.agregar_nodo((3,1), (1,3))  # Hijo del nodo (3, 2)
-
-visualizador.finalizar()
+#visualizador = VisualizacionArbol()
+#visualizador.agregar_nodo((0, 2))  # Nodo raíz
+#visualizador.agregar_nodo((0,1), (0,2))  # Primer hijo
+#visualizador.agregar_nodo((0,3), (0,2))  # Segundo hijo
+#visualizador.agregar_nodo((1,3), (0,1))  # Hijo del nodo (0, 1)
+#visualizador.agregar_nodo((1,0), (0,3))  # Hijo del nodo (0, 3)
+#visualizador.agregar_nodo((2,3), (0,3))  # Hijo del nodo (0, 3)
+#visualizador.agregar_nodo((2,0), (1,0))  # Hijo del nodo (1, 0)
+#visualizador.agregar_nodo((2,2), (1,0))  # Hijo del nodo (1, 0)
+#visualizador.agregar_nodo((3,0), (2,2))  # Hijo del nodo (2, 2)
+#visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo de (0, 1)
+#visualizador.agregar_nodo((3,2), (2,2))  # Hijo repetido del nodo (2, 2)
+#visualizador.agregar_nodo((3,1), (2,0))  # Hijo del nodo (2, 0)
+#visualizador.agregar_nodo((1,3), (2,3))  # Repetición del nodo (1, 3) como hijo del nodo (2, 3)
+#visualizador.agregar_nodo((3,1), (1,3))  # Hijo del nodo (3, 2)
+#
+#visualizador.finalizar()
