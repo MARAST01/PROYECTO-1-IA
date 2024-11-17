@@ -13,14 +13,24 @@ arbol = Nodo("coordenadas", 1, 0)  # "coordenadas" es un string para identificar
 
 # Establecer la posición inicial del ratón
 arbol.valor = str(raton)  # Asignamos la posición del ratón al nodo raíz
+"""
+# Crear el nodo raíz
+arbol = Nodo("(0,2)", 1, 0)  # Nodo raíz con coordenada (0, 2), id=1 y costo=0
 
+# Crear los hijos del nodo raíz
+hijo1 = Nodo("(0,1)", 1, 5)  # Primer hijo con coordenada (1, 2), id=2 y costo=5
+hijo2 = Nodo("(0,3)", 1, 6)  # Segundo hijo con coordenada (0, 3), id=3 y costo=6
 
+# Agregar los hijos al nodo raíz
+arbol.agregar_hijo(hijo1)
+arbol.agregar_hijo(hijo2)
+"""
 
 # Función para agregar nodos y aristas
 def agregar_aristas(nodo):
     for hijo in nodo.hijos:
         #G.add_edge(nodo.valor, hijo.valor)
-        G.add_edge(f"{nodo.valor}\n{nodo.heuristica}\n({nodo.id})", f"{hijo.valor}\n{hijo.heuristica}\n({hijo.id})")
+        G.add_edge(f"{nodo.valor}\n{nodo.costo}\n({nodo.id})", f"{hijo.valor}\n{hijo.costo}\n({hijo.id})")
         agregar_aristas(hijo)
 
 
@@ -29,7 +39,7 @@ def agregar_aristas(nodo):
     
 # Función para asignar posiciones a los nodos de forma jerárquica
 def asignar_posiciones(nodo, pos, x=0, y=0, layer=1):
-    pos[f"{nodo.valor}\n{nodo.heuristica}\n({nodo.id})"] = (x, y)
+    pos[f"{nodo.valor}\n{nodo.costo}\n({nodo.id})"] = (x, y)
     numhijos = len(nodo.hijos)
     #factor = [0,0,-0.5,0.5,-1,0,1, -1, -0.5,0.5,1]
     factor = [[0],[-0.5,0.5],[-1,0,1],[-1,-0.3,0.3,1]]
@@ -67,7 +77,7 @@ def ejecutar_expansion():
     # Mientras no se alcance la meta (queso), seguir expandiendo el árbol
     while not meta:
         # Control aleatorio para decidir qué estrategia usar
-        control = 2  # Esto puede ser ajustado si decides incorporar aleatoriedad
+        control = 0  # Esto puede ser ajustado si decides incorporar aleatoriedad
 
         # Variable para guardar el árbol actual y el nuevo árbol
         arbol_actual = arbol

@@ -1,24 +1,26 @@
 from arbol import Nodo  # Importamos la clase Nodo
-from Laberinto import laberinto,queso  # Importamos el laberinto
+from Laberinto import laberinto, queso  # Importamos el laberinto
 
-def calcular_costo_acumulado(nodo, costo_actual=0):
+def calcular_costo_acumulado(nodo):
     """
     Calcula el costo acumulado desde la raíz hasta un nodo.
     """
-    return costo_actual + nodo.costo  # Suma el costo del nodo actual al acumulado
+    if nodo.padre is None:  # Si es la raíz, el costo es su propio costo
+        return nodo.costo
+    else:
+        return calcular_costo_acumulado(nodo.padre) + nodo.costo
 
-def obtener_hojas_con_costos(nodo, costo_acumulado=0):
+def obtener_hojas_con_costos(nodo):
     """
     Obtiene todas las hojas del árbol y sus costos acumulados.
     """
     hojas = []
-    costo_actual = calcular_costo_acumulado(nodo, costo_acumulado)
 
     if not nodo.hijos:  # Si es una hoja
-        hojas.append((nodo, costo_actual))
+        hojas.append((nodo, calcular_costo_acumulado(nodo)))
     else:
         for hijo in nodo.hijos:
-            hojas.extend(obtener_hojas_con_costos(hijo, costo_actual))
+            hojas.extend(obtener_hojas_con_costos(hijo))
     return hojas
 
 def obtener_movimientos_validos(pos_actual):
@@ -60,7 +62,8 @@ def costo_uniforme(arbol):
     # Expandir el nodo añadiendo hijos
     for mov in movimientos:
         nuevo_nodo = Nodo(str(mov), max([nodo.id for nodo, _ in hojas_con_costos]) + 1, 1)
-        nuevo_nodo.costo = 1  # Suponemos que cada movimiento tiene un costo de 1
+        nuevo_nodo.costo = nodo_a_expandir.costo + 1  # Costo del padre + 1
+        nuevo_nodo.padre = nodo_a_expandir  # Establecer el nodo padre
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
 
     return arbol, False  # Si no es el queso, retornar el árbol y meta como False
