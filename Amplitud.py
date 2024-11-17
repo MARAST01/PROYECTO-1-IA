@@ -89,8 +89,6 @@ for _ in range(10):
     agregar_aristas(arbol)
     asignar_posiciones(arbol, pos)
 
-    # Limpiar la figura anterior
-    plt.clf()
 
     # Dibujar el grafo con posiciones jerárquicas
     plt.figure(figsize=(10, 8))
