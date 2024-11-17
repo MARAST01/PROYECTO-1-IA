@@ -1,24 +1,26 @@
 from arbol import Nodo  # Importamos la clase Nodo
-from Laberinto import laberinto,queso  # Importamos el laberinto
+from Laberinto import laberinto, queso  # Importamos el laberinto
 
-def calcular_costo_acumulado(nodo, costo_actual=0):
+def calcular_costo_acumulado(nodo):
     """
     Calcula el costo acumulado desde la raíz hasta un nodo.
     """
-    return costo_actual + nodo.costo  # Suma el costo del nodo actual al acumulado
+    if nodo.padre is None:  # Si es la raíz, el costo es su propio costo
+        return nodo.costo
+    else:
+        return calcular_costo_acumulado(nodo.padre) + nodo.costo
 
-def obtener_hojas_con_costos(nodo, costo_acumulado=0):
+def obtener_hojas_con_costos(nodo):
     """
     Obtiene todas las hojas del árbol y sus costos acumulados.
     """
     hojas = []
-    costo_actual = calcular_costo_acumulado(nodo, costo_acumulado)
 
     if not nodo.hijos:  # Si es una hoja
-        hojas.append((nodo, costo_actual))
+        hojas.append((nodo, calcular_costo_acumulado(nodo)))
     else:
         for hijo in nodo.hijos:
-            hojas.extend(obtener_hojas_con_costos(hijo, costo_actual))
+            hojas.extend(obtener_hojas_con_costos(hijo))
     return hojas
 
 def obtener_movimientos_validos(pos_actual):
@@ -60,79 +62,8 @@ def costo_uniforme(arbol):
     # Expandir el nodo añadiendo hijos
     for mov in movimientos:
         nuevo_nodo = Nodo(str(mov), max([nodo.id for nodo, _ in hojas_con_costos]) + 1, 1)
-        nuevo_nodo.costo = 1  # Suponemos que cada movimiento tiene un costo de 1
+        nuevo_nodo.costo = nodo_a_expandir.costo + 1  # Costo del padre + 1
+        nuevo_nodo.padre = nodo_a_expandir  # Establecer el nodo padre
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
 
     return arbol, False  # Si no es el queso, retornar el árbol y meta como False
-"""
-# Crear el grafo dirigido
-G = nx.DiGraph()
-
-# Función para agregar nodos y aristas
-def agregar_aristas(nodo):
-    for hijo in nodo.hijos:
-        #G.add_edge(nodo.valor, hijo.valor)
-        G.add_edge(f"{nodo.valor} ({nodo.id})", f"{hijo.valor} ({hijo.id})")
-        agregar_aristas(hijo)
-
-
-
-    
-    
-# Función para asignar posiciones a los nodos de forma jerárquica
-def asignar_posiciones(nodo, pos, x=0, y=0, layer=1):
-    pos[f"{nodo.valor} ({nodo.id})"] = (x, y)
-    numhijos = len(nodo.hijos)
-    #factor = [0,0,-0.5,0.5,-1,0,1, -1, -0.5,0.5,1]
-    factor = [[0],[-0.5,0.5],[-1,0,1],[-1,-0.3,0.3,1]]
-    for i, hijo in enumerate(nodo.hijos):
-        #asignar_posiciones(hijo, pos, x + i - (numhijos/2), y - 1, layer + 1)
-        y1=(y-1)*-1
-        x1 = x+(factor[numhijos-1][i])/(y1*y1)
-        asignar_posiciones(hijo, pos, x1, y - 1, layer + 1)
-
-
-coordenadas = raton
-arbol = Nodo("coordenadas", 1,0)  
-for _ in range(6): # while meta is False:
-    arbol,meta = costo_uniforme(arbol)  # Expande el árbol una vez
-    # Asignar posiciones a los nodos comenzando desde la raíz
-    pos = {}
-    agregar_aristas(arbol)
-    asignar_posiciones(arbol, pos)
-
-    # Limpiar la figura anterior
-    plt.clf()
-    # Dibujar el grafo con posiciones jerárquicas
-    plt.figure(figsize=(8, 6))
-    nx.draw(G, pos, with_labels=True, node_size=1000, node_color="skyblue", font_size=10, font_weight="bold", arrows=True)
-    plt.title(f"Árbol Jerárquico Expansión {(_ + 1)}")
-    plt.show()
-
-# Expande el árbol tres veces y dibuja en cada paso
-# Expande el árbol tres veces y dibuja en cada paso
-for _ in range(6): # while meta is False:
-    control = random.randint(0, 0)
-    if control == 0:
-        arbol,meta = costo_uniforme(arbol)  # Expande el árbol una vez
-        # Asignar posiciones a los nodos comenzando desde la raíz
-        pos = {}
-        agregar_aristas(arbol)
-        asignar_posiciones(arbol, pos)
-        
-        # Limpiar la figura anterior
-        plt.clf()
-
-        # Dibujar el grafo con posiciones jerárquicas
-        plt.figure(figsize=(8, 6))
-        nx.draw(G, pos, with_labels=True, node_size=1000, node_color="skyblue", font_size=10, font_weight="bold", arrows=True)
-        plt.title(f"Árbol Jerárquico Expansión {(_ + 1)}")
-        plt.show()
-        
-        
-        
-    if control == 1:
-        arbol = ffff(arbol)
-    arbol = costo_uniforme(arbol)  # Expande el árbol una vez
- 
- """   
