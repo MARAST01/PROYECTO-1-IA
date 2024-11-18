@@ -5,6 +5,7 @@ from arbol import Nodo
 from CostoUniforme import costo_uniforme
 from Profundidad import preferente_por_profundidad
 from Avara import busqueda_avara
+from Amplitud import amplitud
 from Laberinto import raton  # Importamos las coordenadas iniciales
 
 G = nx.DiGraph()
@@ -14,18 +15,20 @@ arbol = Nodo("coordenadas", 1, 0)  # "coordenadas" es un string para identificar
 # Establecer la posición inicial del ratón
 arbol.valor = str(raton)  # Asignamos la posición del ratón al nodo raíz
 """
-# Crear el nodo raíz
 arbol = Nodo("(0,2)", 1, 0)  # Nodo raíz con coordenada (0, 2), id=1 y costo=0
 
-# Crear los hijos del nodo raíz
+# Crear los h"ijos del nodo raíz
 hijo1 = Nodo("(0,1)", 1, 5)  # Primer hijo con coordenada (1, 2), id=2 y costo=5
 hijo2 = Nodo("(0,3)", 1, 6)  # Segundo hijo con coordenada (0, 3), id=3 y costo=6
 
+
+hijo1.agregar_hijo(Nodo("(0,2)", 2, 3))  # Agregar un hijo al primer hijo
+#hijo1.agregar_hijo(Nodo("(0,0)", 3, 4))  # Agregar otro hijo al primer hijo
 # Agregar los hijos al nodo raíz
 arbol.agregar_hijo(hijo1)
 arbol.agregar_hijo(hijo2)
-"""
 
+"""
 # Función para agregar nodos y aristas
 def agregar_aristas(nodo):
     for hijo in nodo.hijos:
@@ -73,11 +76,13 @@ meta = False
 # Función para ejecutar la expansión
 def ejecutar_expansion():
     global meta, arbol
+    #dibujar_arbol()
+
 
     # Mientras no se alcance la meta (queso), seguir expandiendo el árbol
     while not meta:
         # Control aleatorio para decidir qué estrategia usar
-        control = 0  # Esto puede ser ajustado si decides incorporar aleatoriedad
+        control = 3  # Esto puede ser ajustado si decides incorporar aleatoriedad
 
         # Variable para guardar el árbol actual y el nuevo árbol
         arbol_actual = arbol
@@ -89,6 +94,8 @@ def ejecutar_expansion():
             arbol_nuevo, meta = preferente_por_profundidad(arbol_actual)
         elif control == 2:
             arbol_nuevo, meta = busqueda_avara(arbol_actual)
+        elif control == 3:
+            arbol_nuevo, meta = amplitud(arbol_actual)
 
         # Dibujar el árbol (ya sea el actual o el nuevo, dependiendo de tu implementación)
         dibujar_arbol()

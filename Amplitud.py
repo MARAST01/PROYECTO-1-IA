@@ -1,11 +1,17 @@
+from collections import deque
 from arbol import Nodo  # Importamos la clase Nodo
-from Laberinto import laberinto  # Importamos el laberinto
-import networkx as nx
-import matplotlib.pyplot as plt
-from collections import deque  # Para manejar la cola de nodos
+from Laberinto import laberinto, queso  # Importamos el laberinto y la posición del queso
 
-# Contador global para asignar identificadores únicos
-contador_id = 1
+# Contador global para generar IDs únicos
+contador_id = 0
+
+def generar_id():
+    """
+    Genera un ID único incremental.
+    """
+    global contador_id
+    contador_id += 1
+    return contador_id
 
 def obtener_movimientos_validos(pos_actual):
     """
@@ -13,7 +19,9 @@ def obtener_movimientos_validos(pos_actual):
     """
     movimientos = []
     x, y = pos_actual
-    posibilidades = [(x - 1, y), (x, y + 1), (x + 1, y), (x, y - 1)]  # Arriba, Derecha, Abajo, Izquierda
+
+    # Definir los posibles movimientos: Arriba, Derecha, Abajo, Izquierda
+    posibilidades = [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
 
     for nx, ny in posibilidades:
         if 0 <= nx < len(laberinto[0]) and 0 <= ny < len(laberinto):  # Dentro de los límites
@@ -21,36 +29,50 @@ def obtener_movimientos_validos(pos_actual):
                 movimientos.append((nx, ny))
     return movimientos
 
-def busqueda_amplitud_iterativa(arbol, cola, visitados):
+def es_meta(pos_actual):
     """
-    Expande un nodo a la vez usando Búsqueda en Amplitud.
+    Verifica si una posición actual es la meta (el queso).
     """
-    global contador_id
+    return pos_actual == queso
 
-    if not cola:
-        if arbol.hijos:
-            return arbol  # Si ya no hay nodos por expandir, terminamos
-        cola.append(arbol)  # Si no hay hijos, empezamos desde la raíz
+def amplitud(arbol):
+    """
+    Expande un solo nodo según la lógica de búsqueda preferente por amplitud.
+    Si el nodo expandido tiene las coordenadas del queso, retorna el árbol y True (meta alcanzada).
+    Si no, retorna el árbol y False.
+    """
+    # Crear una cola temporal para buscar el siguiente nodo a expandir
+    cola = deque([arbol])  # Inicialmente, el nodo raíz está en la cola
 
-    # Tomar el nodo más antiguo de la cola
-    nodo_actual = cola.popleft()
-    pos_actual = nodo_actual.valor  # Valor directamente como tupla (x, y)
+    # Realizar un recorrido por nivel para encontrar el siguiente nodo no expandido
+    while cola:
+        nodo_a_expandir = cola.popleft()
 
-    # Registrar nodo actual como visitado (puede repetirse en otras ramas)
-    visitados.add(nodo_actual.valor)
+        # Verificar si el nodo actual es la meta
+        pos_actual = eval(nodo_a_expandir.valor)  # Convertir el string "(x, y)" a una tupla
+        if es_meta(pos_actual):
+            return arbol, True  # Meta alcanzada
 
-    # Obtener movimientos válidos desde la posición actual
-    movimientos = obtener_movimientos_validos(pos_actual)
+        # Si el nodo ya tiene hijos, agregar los hijos a la cola
+        if nodo_a_expandir.hijos:
+            cola.extend(nodo_a_expandir.hijos)
+        else:
+            # Nodo encontrado para expandir
+            movimientos = obtener_movimientos_validos(pos_actual)
 
-    # Expandir el nodo añadiendo hijos
-    for mov in movimientos:
-        nuevo_nodo = Nodo(mov, contador_id, 1)  # Usa la tupla directamente
-        contador_id += 1  # Incrementar el contador global
-        nodo_actual.agregar_hijo(nuevo_nodo)
-        cola.append(nuevo_nodo)  # Añadir a la cola para futuras expansiones
+            # Crear hijos para cada movimiento válido
+            for mov in movimientos:
+                nuevo_nodo = Nodo(
+                    valor=str(mov),  # La posición como string
+                    id=generar_id(),  # Generar un nuevo ID único
+                    costo=nodo_a_expandir.costo + 1,  # Incrementar el costo
+                    padre=nodo_a_expandir  # Establecer el nodo padre
+                )
+                nodo_a_expandir.agregar_hijo(nuevo_nodo)  # Añadir el nuevo nodo como hijo
 
-    return arbol
+            return arbol, False  # Nodo expandido, retornar el árbol y meta como False
 
+<<<<<<< HEAD
 # Crear el grafo dirigido
 G = nx.DiGraph()
 
@@ -104,3 +126,6 @@ for _ in range(10):
     )
     plt.title(f"Árbol Jerárquico Expansión {(_ + 1)}")
     plt.show()
+=======
+    return arbol, False  # Si no hay más nodos para expandir, retornar el árbol y meta como False
+>>>>>>> a08b1411af3e41058b757865f1f31880a719cabe
