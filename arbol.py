@@ -1,5 +1,5 @@
 class Nodo:
-    def __init__(self, valor, id, costo, heuristica=1, padre=None):
+    def __init__(self, valor, id, costo = 1, heuristica=1, padre=None):
         self.valor = valor
         self.id = id
         self.costo = costo
