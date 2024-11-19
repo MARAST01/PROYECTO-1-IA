@@ -2,7 +2,7 @@ import customtkinter as ctk
 import subprocess
 
 # Configuración inicial
-ctk.set_appearance_mode("System")  # Modos: "System", "Dark", "Light"
+ctk.set_appearance_mode("Dark")  # Modos: "System", "Dark", "Light"
 ctk.set_default_color_theme("blue")  # Colores: "blue", "green", "dark-blue"
 
 # Crear ventana principal

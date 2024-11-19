@@ -1,12 +1,14 @@
 import customtkinter as ctk
 import tkinter as tk
 
-
+ctk.set_appearance_mode("Dark")
+ctk.set_default_color_theme("blue")
 class MatrixEditorApp(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Editor de Matriz")
         self.geometry("500x500")
+        
         
         self.matrix = [[0 for _ in range(5)] for _ in range(5)]  # Matriz inicial (5x5)
         self.raton = None  # Coordenadas del ratón
