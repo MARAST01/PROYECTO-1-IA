@@ -103,9 +103,9 @@ def dibujar_arbol():
 # Inicializar la variable meta como False
 meta = False
 
-idn = 1  # ID para los nodos
-limite = 2  # Límite de profundidad para la búsqueda limitada
-numero_expansion = 2
+idn = 0  # ID para los nodos
+limite = 4  # Límite de profundidad para la búsqueda limitada
+numero_expansion = 1
 def altura_arbol(nodo):
     """
     Calcula la altura de un árbol recursivamente.
@@ -124,72 +124,101 @@ def altura_arbol(nodo):
 def ejecutar_expansion():
     global meta, arbol,idn,limite
     # Crear una lista de controles (0 a 5)
-    controles_disponibles = [4,0,2,3,1,5]
-    
+    #controles_disponibles = [0, 1, 2, 3, 4, 5]
+    #control = random.choice(controles_disponibles)
+    #controles_disponibles.remove(control)
 
 
     # Mientras no se alcance la meta (queso), seguir expandiendo el árbol
-    while not meta and controles_disponibles:
+    while not meta: #and controles_disponibles:
+        idn = contar_nodos(arbol)
         # Control aleatorio para decidir qué estrategia usar
-        #control = 1 # Esto puede ser ajustado si decides incorporar aleatoriedad
-        #control = random.randint(0, 1)
-        #control = random.choice(controles_disponibles)
-        control = controles_disponibles[0]
-        controles_disponibles.remove(control)
+        control = 4 # Esto puede ser ajustado si decides incorporar aleatoriedad
+        #control = random.randint(0, 5)
 
         # Variable para guardar el árbol actual y el nuevo árbol
         arbol_actual = arbol
         arbol_nuevo = None
 
         if control == 0:
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = costo_uniforme(arbol_actual,idn)  # Expande el árbol una ve
-                print ("costo uniforme")
-                dibujar_arbol()
-                idn = contar_nodos(arbol)
+            arbol_nuevo, meta = costo_uniforme(arbol_actual,idn)  # Expande el árbol una ve
+            print ("costo uniforme")
+            dibujar_arbol()
         elif control == 1:
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = preferente_por_profundidad(arbol_actual,idn)
-                print("profundidad")
-                dibujar_arbol()
-                idn = contar_nodos(arbol)
+            arbol_nuevo, meta = preferente_por_profundidad(arbol_actual,idn)
+            print("profundidad")
+            dibujar_arbol()
         elif control == 2:
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = busqueda_avara(arbol_actual,idn)
-                print("avara")
-                dibujar_arbol()
-                idn = contar_nodos(arbol)
+            arbol_nuevo, meta = busqueda_avara(arbol_actual,idn)
+            print("avara")
+            dibujar_arbol()
         elif control == 3:
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = amplitud(arbol_actual,idn)
-                print("amplitud")
-                dibujar_arbol()
-                idn = contar_nodos(arbol)
+            arbol_nuevo, meta = amplitud(arbol_actual,idn)
+            print("amplitud")
+            dibujar_arbol()
         #limitada por profundidad
         elif control == 4:
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = profundidad_limitada(arbol_actual,limite,idn)
-                print("limitada")
-                dibujar_arbol()
+            arbol_nuevo, meta = profundidad_limitada(arbol_actual,limite,idn)
+            print("limitada")
+            dibujar_arbol()
+            
+        elif control == 6:
+            print("limitada")
+            for i in range(0, limite ):
+                arbol_nuevo, meta = preferente_por_profundidad(arbol_actual,idn)
+                print("prof")
+                arbol = arbol_nuevo
                 idn = contar_nodos(arbol)
+                dibujar_arbol()
+                if meta:
+                    print("¡Meta alcanzada!")
+                    break
+            terminar = False
+            while not terminar:
+                arbol_nuevo, meta = amplitud(arbol_actual,idn)
+                print("ampl")
+                arbol = arbol_nuevo
+                idn = contar_nodos(arbol)
+                dibujar_arbol()
+                terminar = hojas_misma_profundidad(arbol)
+                if meta:
+                    break
         #profundidad iterativa
         elif control == 5:
-            limite_iter = limite
-            for i in range(0,numero_expansion):
-                arbol_nuevo, meta = profundidad_limitada(arbol_actual,limite_iter,idn)
-                print("iterativa")
-                dibujar_arbol()
+            print("iterativa")
+            for i in range(0, limite ):
+                arbol_nuevo, meta = preferente_por_profundidad(arbol_actual,idn)
+                print("prof")
+                arbol = arbol_nuevo
                 idn = contar_nodos(arbol)
-                limite_iter+=1
-               
-        arbol = arbol_nuevo        
+                dibujar_arbol()
+                terminar = False
+                while not terminar:
+                    arbol_nuevo, meta = amplitud(arbol_actual,idn)
+                    print("ampl")
+                    arbol = arbol_nuevo
+                    idn = contar_nodos(arbol)
+                    dibujar_arbol()
+                    terminar = hojas_misma_profundidad(arbol)
+                    if meta:
+                        break
+                if meta:
+                    print("¡Meta alcanzada!")
+                    break
+            
+        
+                
+            
+            
+        arbol = arbol_nuevo
+
+        # Sobrescribir el árbol anterior con el nuevo
+        
 
         # Si se alcanzó la meta, salir del bucle
         if meta:
             print("¡Meta alcanzada!")
             break
-        
-
         # Si se agotaron los controles y no se alcanzó la meta
     if not meta:
         print("No se alcanzó la meta y no quedan estrategias disponibles.")

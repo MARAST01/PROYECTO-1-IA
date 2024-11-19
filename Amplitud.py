@@ -3,15 +3,8 @@ from arbol import Nodo  # Importamos la clase Nodo
 from Laberinto import laberinto, queso  # Importamos el laberinto y la posición del queso
 
 # Contador global para generar IDs únicos
-contador_id = 0
 
-def generar_id():
-    """
-    Genera un ID único incremental.
-    """
-    global contador_id
-    contador_id += 1
-    return contador_id
+
 
 def obtener_movimientos_validos(pos_actual):
     """
@@ -35,7 +28,7 @@ def es_meta(pos_actual):
     """
     return pos_actual == queso
 
-def amplitud(arbol):
+def amplitud(arbol,idn):
     """
     Expande un solo nodo según la lógica de búsqueda preferente por amplitud.
     Si el nodo expandido tiene las coordenadas del queso, retorna el árbol y True (meta alcanzada).
@@ -61,10 +54,10 @@ def amplitud(arbol):
             movimientos = obtener_movimientos_validos(pos_actual)
 
             # Crear hijos para cada movimiento válido
-            for mov in movimientos:
+            for i, mov in enumerate(movimientos):
                 nuevo_nodo = Nodo(
                     valor=str(mov),  # La posición como string
-                    id=generar_id(),  # Generar un nuevo ID único
+                    id=idn+i+1,  # Generar un nuevo ID único
                     costo=nodo_a_expandir.costo + 1,  # Incrementar el costo
                     padre=nodo_a_expandir  # Establecer el nodo padre
                 )

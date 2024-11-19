@@ -37,7 +37,7 @@ def calcular_heuristica(pos_actual, meta):
     x2, y2 = meta
     return abs(x1 - x2) + abs(y1 - y2)  # Distancia de Manhattan
 
-def busqueda_avara(arbol):
+def busqueda_avara(arbol,idn):
     """
     Expande el nodo hoja con menor heurística y actualiza el árbol.
     Si el nodo a expandir tiene las coordenadas del queso, retorna True (meta alcanzada).
@@ -59,9 +59,9 @@ def busqueda_avara(arbol):
     movimientos = obtener_movimientos_validos(pos_actual)
 
     # Expandir el nodo añadiendo hijos
-    for mov in movimientos:
+    for i, mov in enumerate(movimientos):
         heuristica = calcular_heuristica(mov, queso)
-        nuevo_nodo = Nodo(str(mov), nodo_a_expandir.id + len(nodo_a_expandir.hijos) + 1, costo=1, heuristica=heuristica)
+        nuevo_nodo = Nodo(str(mov), idn+i+1, costo=1, heuristica=heuristica)
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
 
     return arbol, False  # Si no es el queso, retornar el árbol y meta como False
