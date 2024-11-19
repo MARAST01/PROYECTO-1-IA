@@ -205,6 +205,3 @@ def ejecutar_expansion(limite,numero_expansion):
     if not meta:
         print("No se alcanzó la meta y no quedan estrategias disponibles.")
         messagebox.showwarning("Error", "No se alcanzó la meta y no quedan estrategias disponibles.")
-
-
-#ejecutar_expansion(4,4)
