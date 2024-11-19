@@ -1,4 +1,5 @@
 import random
+from tkinter import messagebox 
 import matplotlib.pyplot as plt
 import networkx as nx
 from arbol import Nodo
@@ -114,8 +115,7 @@ def dibujar_arbol(titulo):
 meta = False
 
 idn = 1  # ID para los nodos
-limite = 2  # Límite de profundidad para la búsqueda limitada
-numero_expansion = 2
+
 def altura_arbol(nodo):
     """
     Calcula la altura de un árbol recursivamente.
@@ -131,8 +131,8 @@ def altura_arbol(nodo):
 
 
 # Función para ejecutar la expansión
-def ejecutar_expansion():
-    global meta, arbol,idn,limite
+def ejecutar_expansion(limite,numero_expansion):
+    global meta, arbol,idn
     # Crear una lista de controles (0 a 5)
     controles_disponibles = [0, 1, 2, 3, 4, 5]
     
@@ -197,14 +197,14 @@ def ejecutar_expansion():
         # Si se alcanzó la meta, salir del bucle
         if meta:
             print("¡Meta alcanzada!")
+            messagebox.showinfo("¡Meta alcanzada!", "¡Meta alcanzada!")
             break
         
 
         # Si se agotaron los controles y no se alcanzó la meta
     if not meta:
         print("No se alcanzó la meta y no quedan estrategias disponibles.")
+        messagebox.showwarning("Error", "No se alcanzó la meta y no quedan estrategias disponibles.")
 
-# Ejecutar la expansión del árbol
-ejecutar_expansion()
-### dibujar_arbol(arbol, arbol_nuevo)
-### organizar la funcion dibujar arbol para el color, tenemos el arbol viejo y el arbol nuevo.
+
+#ejecutar_expansion(4,4)
