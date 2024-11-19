@@ -38,7 +38,7 @@ def obtener_movimientos_validos(pos_actual):
                 movimientos.append((nx, ny))
     return movimientos
 
-def preferente_por_profundidad(arbol):
+def preferente_por_profundidad(arbol,idn):
     """
     Expande el nodo hoja más profundo y actualiza el árbol.
     Si el nodo a expandir tiene las coordenadas del queso, retorna True (meta alcanzada).
@@ -57,8 +57,8 @@ def preferente_por_profundidad(arbol):
     movimientos = obtener_movimientos_validos(pos_actual)
 
     # Expandir el nodo añadiendo hijos
-    for mov in movimientos:
-        nuevo_nodo = Nodo(str(mov), nodo_a_expandir.id + len(nodo_a_expandir.hijos) + 1, 1)
+    for i,mov in enumerate(movimientos):
+        nuevo_nodo = Nodo(str(mov), idn+1+i, 1)
         nuevo_nodo.costo = 1  # Suponemos que cada movimiento tiene un costo de 1
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
 

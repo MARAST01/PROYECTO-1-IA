@@ -38,7 +38,7 @@ def obtener_movimientos_validos(pos_actual):
                 movimientos.append((nx, ny))
     return movimientos
 
-def costo_uniforme(arbol):
+def costo_uniforme(arbol,idn):
     """
     Expande el nodo hoja con menor costo acumulado y actualiza el árbol.
     Si el nodo a expandir tiene las coordenadas del queso, retorna True (meta alcanzada).
@@ -60,8 +60,8 @@ def costo_uniforme(arbol):
     movimientos = obtener_movimientos_validos(pos_actual)
 
     # Expandir el nodo añadiendo hijos
-    for mov in movimientos:
-        nuevo_nodo = Nodo(str(mov), max([nodo.id for nodo, _ in hojas_con_costos]) + 1, 1)
+    for i, mov in enumerate(movimientos):
+        nuevo_nodo = Nodo(str(mov), idn + i+1, 1)
         nuevo_nodo.costo = nodo_a_expandir.costo + 1  # Costo del padre + 1
         nuevo_nodo.padre = nodo_a_expandir  # Establecer el nodo padre
         nodo_a_expandir.agregar_hijo(nuevo_nodo)
