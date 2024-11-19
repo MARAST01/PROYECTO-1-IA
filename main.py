@@ -21,47 +21,17 @@ def contar_nodos(raiz):
     return total
 
 
-def hojas_misma_profundidad(nodo):
-    def dfs(nodo, profundidad, profundidades):
-        # Si el nodo no tiene hijos, es una hoja
-        if not nodo.hijos:
-            profundidades.add(profundidad)
-            # Si hay más de un nivel de profundidad, no pueden estar al mismo nivel
-            if len(profundidades) > 1:
-                return False
-        else:
-            # Recorrer los hijos del nodo
-            for hijo in nodo.hijos:
-                if not dfs(hijo, profundidad + 1, profundidades):
-                    return False
-        return True
-    
-    # Usamos un conjunto para almacenar las profundidades únicas
-    profundidades = set()
-    return dfs(nodo, 0, profundidades)
 
 
+
+#GRAFOOOO
 G = nx.DiGraph()
 # Inicializar el árbol con el nodo raíz en la posición del ratón
 arbol = Nodo("coordenadas", 1, 0)  # "coordenadas" es un string para identificar el nodo
 
 # Establecer la posición inicial del ratón
 arbol.valor = str(raton)  # Asignamos la posición del ratón al nodo raíz
-"""
-arbol = Nodo("(0,2)", 1, 0)  # Nodo raíz con coordenada (0, 2), id=1 y costo=0
 
-# Crear los h"ijos del nodo raíz
-hijo1 = Nodo("(0,1)", 1, 5)  # Primer hijo con coordenada (1, 2), id=2 y costo=5
-hijo2 = Nodo("(0,3)", 1, 6)  # Segundo hijo con coordenada (0, 3), id=3 y costo=6
-
-
-hijo1.agregar_hijo(Nodo("(0,2)", 2, 3))  # Agregar un hijo al primer hijo
-#hijo1.agregar_hijo(Nodo("(0,0)", 3, 4))  # Agregar otro hijo al primer hijo
-# Agregar los hijos al nodo raíz
-arbol.agregar_hijo(hijo1)
-arbol.agregar_hijo(hijo2)
-
-#"""
 
 # Función para agregar nodos y aristas
 def agregar_aristas(nodo):
@@ -72,33 +42,73 @@ def agregar_aristas(nodo):
 
 
     
-# Función para asignar posiciones a los nodos de forma jerárquica
-def asignar_posiciones(nodo, pos, x=0, y=0, layer=1):
-    pos[f"{nodo.valor}\n{nodo.heuristica}\n({nodo.id})"] = (x, y)
+def asignar_posiciones(nodo, pos, colores, x=0, y=0, layer=1):
+    """
+    Asigna posiciones jerárquicas a los nodos de un árbol y crea un diccionario de colores.
+    
+    :param nodo: Nodo actual que se está procesando.
+    :param pos: Diccionario para almacenar las posiciones de los nodos.
+    :param colores: Diccionario para almacenar los colores de los nodos.
+    :param x: Coordenada X del nodo actual.
+    :param y: Coordenada Y del nodo actual.
+    :param layer: Capa (nivel) del nodo actual en el árbol.
+    """
+    # Formatear el nombre del nodo para usarlo como clave en las posiciones y colores
+    nodo_key = f"{nodo.valor}\n{nodo.heuristica}\n({nodo.id})"
+    pos[nodo_key] = (x, y)
+
+    # Asignar color inicial (skyblue) a todos los nodos
+    colores[nodo_key] = "skyblue"
+
+    # Factor de espaciado horizontal basado en el número de hijos
     numhijos = len(nodo.hijos)
-    #factor = [0,0,-0.5,0.5,-1,0,1, -1, -0.5,0.5,1]
-    factor = [[0],[-0.5,0.5],[-1,0,1],[-1,-0.3,0.3,1]]
+    factor = [[0], [-0.5, 0.5], [-1, 0, 1], [-1, -0.3, 0.3, 1]]
+
     for i, hijo in enumerate(nodo.hijos):
-        #asignar_posiciones(hijo, pos, x + i - (numhijos/2), y - 1, layer + 1)
-        y1=(y-1)*-1
-        x1 = x+(factor[numhijos-1][i])/(y1*y1)
-        asignar_posiciones(hijo, pos, x1, y - 1, layer + 1)
-def dibujar_arbol():
+        y1 = (y - 1) * -1  # Invertir para mantener lógica visual
+        x1 = x + (factor[numhijos - 1][i]) / (y1 * y1)  # Calcular la posición del hijo
+        asignar_posiciones(hijo, pos, colores, x1, y - 1, layer + 1)
+
+    # Al final de la asignación, identificar el nodo con el ID más grande
+    max_id = max(int(key.split("(")[-1].strip(")")) for key in colores.keys())
+    for key in colores.keys():
+        if f"({max_id})" in key:
+            colores[key] = "turquoise"  # Pintar de verde el nodo con el ID más grande
+
+        
+def dibujar_arbol(titulo):
     """
     Dibuja el árbol con sus nodos y aristas, mostrando las posiciones jerárquicas.
     
-    :param arbol: El árbol que se va a dibujar.
+    :param titulo: Título a mostrar en la ventana del gráfico.
     """
     # Asignar posiciones a los nodos comenzando desde la raíz
     pos = {}
+    colores = {}  # Diccionario para almacenar colores de los nodos
+
     agregar_aristas(arbol)
-    asignar_posiciones(arbol, pos)
+    asignar_posiciones(arbol, pos, colores)  # Pasar también el diccionario de colores
+
+    # Coordenadas del nodo raíz (asumimos que el nodo raíz está en 0,0)
+    raiz = list(pos.keys())[0]  # Suponiendo que el primer nodo en `pos` es la raíz
+    x_raiz, y_raiz = pos[raiz]
 
     # Dibujar el grafo con posiciones jerárquicas
     plt.figure(figsize=(8, 6))
-    nx.draw(G, pos, with_labels=True, node_size=1000, node_color="skyblue", font_size=10, font_weight="bold", arrows=True)
-    plt.title(f"Árbol Jerárquico Expansión")
+    
+    nx.draw(
+        G, pos, with_labels=True,
+        node_size=1000, node_color=[colores[nodo] for nodo in G.nodes],  # Usar los colores del diccionario
+        font_size=10, font_weight="bold", arrows=True
+    )
+
+    # Agregar el título 4 unidades arriba del nodo raíz
+    plt.text(x_raiz, y_raiz - 1, titulo, fontsize=12, ha='center', va='center', fontweight='bold')
+
+    # Mostrar el gráfico
     plt.show()
+
+
 
 # Inicializar la variable meta como False
 meta = False
@@ -124,7 +134,7 @@ def altura_arbol(nodo):
 def ejecutar_expansion():
     global meta, arbol,idn,limite
     # Crear una lista de controles (0 a 5)
-    controles_disponibles = [4,0,2,3,1,5]
+    controles_disponibles = [0, 1, 2, 3, 4, 5]
     
 
 
@@ -133,8 +143,8 @@ def ejecutar_expansion():
         # Control aleatorio para decidir qué estrategia usar
         #control = 1 # Esto puede ser ajustado si decides incorporar aleatoriedad
         #control = random.randint(0, 1)
-        #control = random.choice(controles_disponibles)
-        control = controles_disponibles[0]
+        control = random.choice(controles_disponibles)
+        #control = controles_disponibles[0]
         controles_disponibles.remove(control)
 
         # Variable para guardar el árbol actual y el nuevo árbol
@@ -145,32 +155,32 @@ def ejecutar_expansion():
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = costo_uniforme(arbol_actual,idn)  # Expande el árbol una ve
                 print ("costo uniforme")
-                dibujar_arbol()
+                dibujar_arbol("costo uniforme")
                 idn = contar_nodos(arbol)
         elif control == 1:
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = preferente_por_profundidad(arbol_actual,idn)
                 print("profundidad")
-                dibujar_arbol()
+                dibujar_arbol("profundidad")
                 idn = contar_nodos(arbol)
         elif control == 2:
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = busqueda_avara(arbol_actual,idn)
                 print("avara")
-                dibujar_arbol()
+                dibujar_arbol("avara")
                 idn = contar_nodos(arbol)
         elif control == 3:
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = amplitud(arbol_actual,idn)
                 print("amplitud")
-                dibujar_arbol()
+                dibujar_arbol("amplitud")
                 idn = contar_nodos(arbol)
         #limitada por profundidad
         elif control == 4:
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = profundidad_limitada(arbol_actual,limite,idn)
                 print("limitada")
-                dibujar_arbol()
+                dibujar_arbol("limitada por profundidad")
                 idn = contar_nodos(arbol)
         #profundidad iterativa
         elif control == 5:
@@ -178,7 +188,7 @@ def ejecutar_expansion():
             for i in range(0,numero_expansion):
                 arbol_nuevo, meta = profundidad_limitada(arbol_actual,limite_iter,idn)
                 print("iterativa")
-                dibujar_arbol()
+                dibujar_arbol("profundizacion iterativa")
                 idn = contar_nodos(arbol)
                 limite_iter+=1
                
